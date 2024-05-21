@@ -51,6 +51,7 @@ export class ClusterService {
       const res = await coreV1Api.createNamespace(namespace)
       return res.body
     } catch (err) {
+      this.logger.error("error when createAppNamespace")
       this.logger.error(err)
       this.logger.error(err?.response?.body)
       throw err
@@ -66,6 +67,7 @@ export class ClusterService {
       return res.body
     } catch (err) {
       if (err?.response?.body?.reason === 'NotFound') return null
+      this.logger.error("error when getAppNamespace, region=" + region.name + " , appid=" + appid)
       this.logger.error(err)
       this.logger.error(err?.response?.body)
       throw err
@@ -82,6 +84,7 @@ export class ClusterService {
       const res = await coreV1Api.deleteNamespace(namespace)
       return res
     } catch (err) {
+      this.logger.error("error when removeAppNamespace")
       this.logger.error(err)
       this.logger.error(err?.response?.body)
       throw err
@@ -222,7 +225,7 @@ export class ClusterService {
       if (err?.response?.statusCode === 404) {
         return null
       }
-
+      this.logger.error("error when getIngress, region:" + region + " , name " + name + " , namespace " + namespace)
       this.logger.error(err)
       this.logger.error(err?.response?.body)
       throw err

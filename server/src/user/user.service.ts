@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { SystemDatabase } from 'src/system-database'
 import { User, UserWithProfile } from './entities/user'
 import { ObjectId } from 'mongodb'
-import * as sharp from 'sharp'
+// import * as sharp from 'sharp'
 import { UserAvatar } from './entities/user-avatar'
 import { UserProfile } from './entities/user-profile'
 
@@ -100,7 +100,8 @@ export class UserService {
   }
 
   async updateAvatar(image: Express.Multer.File, userid: ObjectId) {
-    const buffer = await sharp(image.buffer).resize(100, 100).webp().toBuffer()
+    const buffer = null
+    // const buffer = await sharp(image.buffer).resize(100, 100).webp().toBuffer()
 
     const client = SystemDatabase.client
     const session = client.startSession()

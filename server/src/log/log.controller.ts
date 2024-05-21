@@ -168,6 +168,7 @@ export class LogController {
         streamsEnded.add(podName)
 
         try {
+          //@ts-ignore
           k8sResponse = await logs.log(
             namespaceOfApp,
             podName,

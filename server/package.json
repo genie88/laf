@@ -30,7 +30,7 @@
     "@aws-sdk/client-s3": "^3.458.0",
     "@aws-sdk/client-sts": "^3.458.0",
     "@aws-sdk/s3-request-presigner": "^3.458.0",
-    "@kubernetes/client-node": "^0.17.1",
+    "@kubernetes/client-node": "^0.21.0",
     "@nestjs/axios": "^1.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
@@ -67,7 +67,6 @@
     "prometheus-query": "^3.3.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "sharp": "^0.32.2",
     "wechatpay-node-v3": "^2.1.1"
   },
   "devDependencies": {
