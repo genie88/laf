@@ -28,6 +28,6 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: $CAPACITY
+                storage: 5Gi
   terminationPolicy: Delete
   tolerations: []
