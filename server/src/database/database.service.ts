@@ -107,7 +107,8 @@ export class DatabaseService {
     parsed.database = database.name
     parsed.username = database.user
     parsed.password = database.password
-    parsed.options['authSource'] = database.name
+    parsed.options = parsed.options || {}
+    parsed.options['authSource'] = database.name || 'admin'
 
     return mongodb_uri.format(parsed)
   }
@@ -119,7 +120,8 @@ export class DatabaseService {
     parsed.database = database.name
     parsed.username = database.user
     parsed.password = database.password
-    parsed.options['authSource'] = database.name
+    parsed.options = parsed.options || {}
+    parsed.options['authSource'] = database.name  || 'admin'
 
     return mongodb_uri.format(parsed)
   }

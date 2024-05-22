@@ -1,4 +1,4 @@
-import { V1Ingress, V1IngressTLS } from '@kubernetes/client-node'
+import { V1IngressTLS } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { LABEL_KEY_APP_ID } from 'src/constants'
 import { ClusterService } from 'src/region/cluster/cluster.service'
@@ -46,13 +46,14 @@ export class RuntimeGatewayService {
     }
 
     // build rules
-    const backend = { service: { name: `${appid}`, port: { number: 8000 } } }
+    const backend = { serviceName: `${appid}`, servicePort: 8000 } 
     const rules = hosts.map((host) => {
       return {
         host,
         http: { paths: [{ path: '/', pathType: 'Prefix', backend }] },
       }
     })
+    console.log(backend)
 
     // build tls
     const tls: Array<V1IngressTLS> = []
@@ -73,7 +74,7 @@ export class RuntimeGatewayService {
 
     // create ingress
     const ingressClassName = region.gatewayConf.driver
-    const ingressBody: V1Ingress = {
+    const ingressBody: any = {
       metadata: {
         name,
         namespace,
@@ -97,7 +98,7 @@ export class RuntimeGatewayService {
       },
       spec: { ingressClassName, rules, tls },
     }
-
+    console.log(JSON.stringify(ingressBody))
     const res = await this.clusterService.createIngress(region, ingressBody)
     return res
   }

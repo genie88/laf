@@ -10,7 +10,7 @@ import {
   LABEL_KEY_USER_ID,
 } from 'src/constants'
 import { ApplicationNamespaceMode, Region } from '../entities/region'
-
+import * as fs from "fs";
 @Injectable()
 export class ClusterService {
   private readonly logger = new Logger(ClusterService.name)
@@ -216,9 +216,17 @@ export class ClusterService {
 
   async getIngress(region: Region, name: string, namespace: string) {
     const api = this.makeNetworkingApi(region)
-
+    const authToken = fs.readFileSync("/var/run/secrets/kubernetes.io/serviceaccount/token", 'utf8')
     try {
-      const res = await api.readNamespacedIngress(name, namespace)
+      const url = api.basePath + `/apis/networking.k8s.io/v1beta1/namespaces/${namespace}/ingresses/${name}`;
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authToken
+        },
+      })
       return res.body
     } catch (err) {
       // if ingress not found, return null
@@ -233,16 +241,52 @@ export class ClusterService {
   }
 
   async createIngress(region: Region, body: V1Ingress) {
-    body.apiVersion = 'networking.k8s.io/v1'
+    body.apiVersion = 'networking.k8s.io/v1beta1'
     body.kind = 'Ingress'
     const api = this.makeNetworkingApi(region)
-    const res = await api.createNamespacedIngress(body.metadata.namespace, body)
+    const authToken = fs.readFileSync("/var/run/secrets/kubernetes.io/serviceaccount/token", 'utf8')
+    // const res = await api.createNamespacedIngress(body.metadata.namespace, body)
+    let res
+    try {
+      const url = api.basePath + `/apis/networking.k8s.io/v1beta1/namespaces/${body.metadata.namespace}/ingresses/`;
+      console.log(url)
+      res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authToken
+        },
+        body: JSON.stringify(body)
+      })
+    } catch(e) {
+      console.log(e)
+    }
+     
     return res.body
   }
 
   async deleteIngress(region: Region, name: string, namespace: string) {
     const api = this.makeNetworkingApi(region)
-    const res = await api.deleteNamespacedIngress(name, namespace)
+    const authToken = fs.readFileSync("/var/run/secrets/kubernetes.io/serviceaccount/token", 'utf8')
+    let res
+    try {
+      const url = api.basePath + `/apis/networking.k8s.io/v1beta1/namespaces/${namespace}/ingresses/${name}`;
+      console.log(url)
+      res = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + authToken
+        },
+      })
+    } catch(e) {
+      console.log(e)
+    }
+    
+
+    // const res = await api.deleteNamespacedIngress(name, namespace)
     return res.body
   }
 
